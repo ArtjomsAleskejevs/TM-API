@@ -155,7 +155,7 @@ components:
           description: Optional GraphQL variables map
           additionalProperties: true
       example:
-        query: '{ search(name: "Messi") { players { id name position teamName marketValue } teams { id name countryName marketValue } } }'
+        query: '{ search(name: "Messi") { players { id name position teamName marketValue } } }'
 
     GraphQLResponse:
       type: object
@@ -223,47 +223,6 @@ components:
                 position: LB
                 teamName: null
                 marketValue: '0'
-            teams:
-              - id: 6303
-                name: Mexico
-                countryName: Mexico
-                marketValue: 191850000
-              - id: 26092
-                name: Mexico U20
-                countryName: Mexico U20
-                marketValue: 56680000
-              - id: 16418
-                name: Mexico U23
-                countryName: Mexico U23
-                marketValue: 45170000
-              - id: 51023
-                name: Mexico U18
-                countryName: Mexico U18
-                marketValue: 4350000
-              - id: 1104
-                name: ACR Messina
-                countryName: Italy
-                marketValue: 1590000
-              - id: 23134
-                name: Mexico U17
-                countryName: Mexico U17
-                marketValue: 100000
-              - id: 47231
-                name: Mexico U16
-                countryName: Mexico U16
-                marketValue: 0
-              - id: 48724
-                name: Mexico U15
-                countryName: Mexico U15
-                marketValue: 0
-              - id: 45997
-                name: Mexico U21
-                countryName: Mexico U21
-                marketValue: 0
-              - id: 11442
-                name: UD Messinense
-                countryName: Portugal
-                marketValue: 0
 
     GraphQLError:
       type: object
