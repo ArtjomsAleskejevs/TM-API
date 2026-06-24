@@ -154,6 +154,8 @@ components:
           type: object
           description: Optional GraphQL variables map
           additionalProperties: true
+      example:
+        query: '{ search(name: "Messi") { players { id name position teamName marketValue } teams { id name countryName marketValue } } }'
 
     GraphQLResponse:
       type: object
@@ -167,6 +169,101 @@ components:
           description: List of GraphQL errors, absent when the request succeeds
           items:
             $ref: '#/components/schemas/GraphQLError'
+      example:
+        data:
+          search:
+            players:
+              - id: '28003'
+                name: Lionel Messi
+                position: RW
+                teamName: Inter Miami CF
+                marketValue: '15000000'
+              - id: '113586'
+                name: Manoel
+                position: CB
+                teamName: América Futebol Clube (MG)
+                marketValue: '100000'
+              - id: '449151'
+                name: Junior Messias
+                position: RW
+                teamName: Genoa CFC
+                marketValue: '1100000'
+              - id: '744024'
+                name: João Marcelo
+                position: CB
+                teamName: Cruzeiro Esporte Clube
+                marketValue: '3000000'
+              - id: '173617'
+                name: Fabrício
+                position: CF
+                teamName: Esporte Clube São Bento (SP)
+                marketValue: '0'
+              - id: '1075590'
+                name: Rayane Messi
+                position: LW
+                teamName: NEOM SC
+                marketValue: '2800000'
+              - id: '1185913'
+                name: Pierre Mounguengue
+                position: CF
+                teamName: Paris Saint-Germain U19
+                marketValue: '2000000'
+              - id: '13810'
+                name: Alexandre Rotweiller
+                position: DM
+                teamName: null
+                marketValue: '0'
+              - id: '393581'
+                name: Bruno Almeida
+                position: RW
+                teamName: SC Farense
+                marketValue: '350000'
+              - id: '76071'
+                name: Leandro
+                position: LB
+                teamName: null
+                marketValue: '0'
+            teams:
+              - id: 6303
+                name: Mexico
+                countryName: Mexico
+                marketValue: 191850000
+              - id: 26092
+                name: Mexico U20
+                countryName: Mexico U20
+                marketValue: 56680000
+              - id: 16418
+                name: Mexico U23
+                countryName: Mexico U23
+                marketValue: 45170000
+              - id: 51023
+                name: Mexico U18
+                countryName: Mexico U18
+                marketValue: 4350000
+              - id: 1104
+                name: ACR Messina
+                countryName: Italy
+                marketValue: 1590000
+              - id: 23134
+                name: Mexico U17
+                countryName: Mexico U17
+                marketValue: 100000
+              - id: 47231
+                name: Mexico U16
+                countryName: Mexico U16
+                marketValue: 0
+              - id: 48724
+                name: Mexico U15
+                countryName: Mexico U15
+                marketValue: 0
+              - id: 45997
+                name: Mexico U21
+                countryName: Mexico U21
+                marketValue: 0
+              - id: 11442
+                name: UD Messinense
+                countryName: Portugal
+                marketValue: 0
 
     GraphQLError:
       type: object
