@@ -1,0 +1,618 @@
+openapi: 3.0.0
+info:
+  title: Mapping API
+  description: |
+    OpenAPI specification for the ID Mapping system.
+
+    The API allows translating entity IDs between different data providers
+    (Transfermarkt, Wyscout, StatsBomb, SkillCorner, Capology, Impect, etc.)
+    for male players, female players, and teams.
+
+    ## Authentication
+    All requests require a `token` query parameter. Invalid or missing tokens
+    return `401 Unauthorized`.
+
+    ## ID limits
+    A maximum of **250 IDs** can be submitted per request.
+
+    ## Response modes
+    By default the response is a structured object keyed by the source ID.
+    Pass `mode=simple` to receive a flat array instead.
+  version: 1.0.0
+servers:
+- url: http://localhost:3000
+  description: Local development server
+tags:
+- name: Players
+  description: Male player ID mapping between data providers
+- name: Woman Players
+  description: Female player ID mapping between data providers
+- name: Teams
+  description: Team ID mapping between data providers
+paths:
+  /api/v1/mapping/players:
+    get:
+      tags:
+      - Players
+      summary: Translate male player IDs between providers
+      description: |
+        Returns ID mappings for male players.
+
+        ### Supported providers (`from` / `to`)
+        | Short code | Full name     | ID type  |
+        |------------|---------------|----------|
+        | `tm`       | transfermarkt | integer  |
+        | `wy`       | wyscout       | string   |
+        | `sb`       | statsbomb     | string   |
+        | `sk`       | skillcorner   | string   |
+        | `cp`       | capology      | string   |
+        | `im`       | impect        | string   |
+
+        > **Note:** When `from=tm`, IDs must be integers.
+      operationId: getPlayerMappings
+      parameters:
+      - name: token
+        in: query
+        description: |
+          Authentication token. Must be provided on every request.
+          Example: `testtokenaccess`
+        required: true
+        schema:
+          type: string
+      - name: from
+        in: query
+        description: |
+          Source provider whose IDs you are translating **from**.
+          Accepts both short codes and full names (case-insensitive).
+        required: true
+        schema:
+          type: string
+      - name: to
+        in: query
+        description: |
+          Comma-separated list of target providers to translate IDs **to**.
+          Example: `wy,sb` or `wyscout,statsbomb`.
+        required: true
+        schema:
+          type: string
+      - name: ids
+        in: query
+        description: |
+          Comma-separated list of IDs in the source provider format.
+          Maximum 250 IDs per request.
+          Example: `12345,67890,11111`
+        required: true
+        schema:
+          type: string
+      - name: mode
+        in: query
+        description: |
+          Response format mode. Omit for the default structured response.
+          Pass `simple` to receive a flat array of matched records.
+        required: false
+        schema:
+          type: string
+          enum:
+          - simple
+      responses:
+        "200":
+          description: Mapping results returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+  /api/v1/mapping/woman_players:
+    get:
+      tags:
+      - Woman Players
+      summary: Translate female player IDs between providers
+      description: |
+        Returns ID mappings for female players.
+
+        ### Supported providers (`from` / `to`)
+        | Short code | Full name     | ID type  |
+        |------------|---------------|----------|
+        | `sd`       | soccerdonna   | integer  |
+        | `tm`       | transfermarkt | integer  |
+        | `wy`       | wyscout       | string   |
+        | `sb`       | statsbomb     | string   |
+        | `sk`       | skillcorner   | string   |
+        | `im`       | impect        | string   |
+
+        > **Note:** When `from=sd` or `from=tm`, IDs must be integers.
+      operationId: getWomanPlayerMappings
+      parameters:
+      - name: token
+        in: query
+        description: |
+          Authentication token. Must be provided on every request.
+          Example: `testtokenaccess`
+        required: true
+        schema:
+          type: string
+      - name: from
+        in: query
+        description: |
+          Source provider whose IDs you are translating **from**.
+          Accepts both short codes and full names (case-insensitive).
+        required: true
+        schema:
+          type: string
+      - name: to
+        in: query
+        description: |
+          Comma-separated list of target providers to translate IDs **to**.
+          Example: `wy,sb` or `wyscout,statsbomb`.
+        required: true
+        schema:
+          type: string
+      - name: ids
+        in: query
+        description: |
+          Comma-separated list of IDs in the source provider format.
+          Maximum 250 IDs per request.
+          Example: `12345,67890,11111`
+        required: true
+        schema:
+          type: string
+      - name: mode
+        in: query
+        description: |
+          Response format mode. Omit for the default structured response.
+          Pass `simple` to receive a flat array of matched records.
+        required: false
+        schema:
+          type: string
+          enum:
+          - simple
+      responses:
+        "200":
+          description: Mapping results returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200_1"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+  /api/v1/mapping/teams:
+    get:
+      tags:
+      - Teams
+      summary: Translate team IDs between providers
+      description: |
+        Returns ID mappings for teams.
+
+        ### Supported providers (`from` / `to`)
+        | Short code | Full name     | ID type  |
+        |------------|---------------|----------|
+        | `tm`       | transfermarkt | integer  |
+        | `wy`       | wyscout       | string   |
+        | `sb`       | statsbomb     | string   |
+        | `sk`       | skillcorner   | string   |
+        | `elo`      | elo           | string   |
+        | `oa`       | oa            | string   |
+
+        > **Note:** When `from=tm`, IDs must be integers.
+      operationId: getTeamMappings
+      parameters:
+      - name: token
+        in: query
+        description: |
+          Authentication token. Must be provided on every request.
+          Example: `testtokenaccess`
+        required: true
+        schema:
+          type: string
+      - name: from
+        in: query
+        description: |
+          Source provider whose IDs you are translating **from**.
+          Accepts both short codes and full names (case-insensitive).
+        required: true
+        schema:
+          type: string
+      - name: to
+        in: query
+        description: |
+          Comma-separated list of target providers to translate IDs **to**.
+          Example: `wy,sb` or `wyscout,statsbomb`.
+        required: true
+        schema:
+          type: string
+      - name: ids
+        in: query
+        description: |
+          Comma-separated list of IDs in the source provider format.
+          Maximum 250 IDs per request.
+          Example: `12345,67890,11111`
+        required: true
+        schema:
+          type: string
+      - name: mode
+        in: query
+        description: |
+          Response format mode. Omit for the default structured response.
+          Pass `simple` to receive a flat array of matched records.
+        required: false
+        schema:
+          type: string
+          enum:
+          - simple
+      responses:
+        "200":
+          description: Mapping results returned
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/inline_response_200_2"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "422":
+          $ref: "#/components/responses/UnprocessableEntity"
+components:
+  schemas:
+    PlayerMatch:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Lionel Messi
+        team:
+          type: string
+          example: Inter Miami
+        tm:
+          type: integer
+          description: Transfermarkt ID (integer)
+          nullable: true
+          example: 28003
+        wy:
+          type: string
+          description: Wyscout ID
+          nullable: true
+          example: "3322"
+        sb:
+          type: string
+          description: StatsBomb ID
+          nullable: true
+          example: "2557"
+        sk:
+          type: string
+          description: SkillCorner ID
+          nullable: true
+          example: "109"
+        cp:
+          type: string
+          description: Capology ID
+          nullable: true
+          example: messi-lionel
+        im:
+          type: string
+          description: Impect ID
+          nullable: true
+          example: "4501"
+      description: |
+        A single matched male player record. Contains the player name, team name,
+        the source provider ID and all requested target provider IDs.
+        Any provider ID that is not found in the database will be `null`.
+    FemalePlayerMatch:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Alexandra Popp
+        sd:
+          type: integer
+          description: "Soccerdonna ID (integer, primary key)"
+          nullable: true
+          example: 112233
+        tm:
+          type: integer
+          description: Transfermarkt ID (integer)
+          nullable: true
+          example: 355821
+        wy:
+          type: string
+          description: Wyscout ID
+          nullable: true
+          example: "784512"
+        sb:
+          type: string
+          description: StatsBomb ID
+          nullable: true
+          example: "133456"
+        sk:
+          type: string
+          description: SkillCorner ID
+          nullable: true
+          example: "9901"
+        im:
+          type: string
+          description: Impect ID
+          nullable: true
+          example: "5521"
+      description: |
+        A single matched female player record. Contains the player name,
+        the source provider ID and all requested target provider IDs.
+        Any provider ID that is not found in the database will be `null`.
+    TeamMatch:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Bayern Munich
+        league_id:
+          type: string
+          description: League identifier
+          nullable: true
+          example: L1
+        tm:
+          type: integer
+          description: "Transfermarkt ID (integer, primary key)"
+          nullable: true
+          example: 27
+        wy:
+          type: string
+          description: Wyscout ID
+          nullable: true
+          example: "1657"
+        sb:
+          type: string
+          description: StatsBomb ID
+          nullable: true
+          example: "131"
+        sk:
+          type: string
+          description: SkillCorner ID
+          nullable: true
+          example: "148"
+        elo:
+          type: string
+          description: Club Elo identifier
+          nullable: true
+          example: Bayern Munich
+        oa:
+          type: string
+          description: OptaAnalytics (OA) ID
+          nullable: true
+          example: "9001"
+      description: |
+        A single matched team record. Contains the team name, league ID,
+        the source provider ID and all requested target provider IDs.
+        Any provider ID that is not found in the database will be `null`.
+    inline_response_200:
+      oneOf:
+      - type: object
+        properties:
+          request:
+            $ref: "#/components/schemas/inline_response_200_request"
+          matches:
+            type: object
+            additionalProperties:
+              $ref: "#/components/schemas/PlayerMatch"
+            description: |
+              Object keyed by the **source provider ID**.
+              Each value is a matched record.
+            example:
+              "28003":
+                name: Lionel Messi
+                team: Inter Miami
+                tm: 28003
+                wy: "3322"
+                sb: "2557"
+          not_found:
+            type: array
+            description: |
+              Source IDs that had no matching record in the database.
+            example:
+            - 99999
+            items:
+              oneOf:
+              - type: integer
+              - type: string
+        description: Default response (mode not set)
+      - type: object
+        properties:
+          matches:
+            type: array
+            example:
+            - name: Lionel Messi
+              team: Inter Miami
+              tm: 28003
+              wy: "3322"
+              sb: "2557"
+            items:
+              $ref: "#/components/schemas/PlayerMatch"
+        description: Simple response (mode=simple)
+    inline_response_200_1:
+      oneOf:
+      - type: object
+        properties:
+          request:
+            $ref: "#/components/schemas/inline_response_200_1_request"
+          matches:
+            type: object
+            additionalProperties:
+              $ref: "#/components/schemas/FemalePlayerMatch"
+            description: Object keyed by the source provider ID
+            example:
+              "112233":
+                name: Alexandra Popp
+                sd: 112233
+                wy: "784512"
+                sk: "9901"
+          not_found:
+            type: array
+            example:
+            - 999999
+            items:
+              oneOf:
+              - type: integer
+              - type: string
+        description: Default response (mode not set)
+      - type: object
+        properties:
+          matches:
+            type: array
+            items:
+              $ref: "#/components/schemas/FemalePlayerMatch"
+        description: Simple response (mode=simple)
+    inline_response_200_2:
+      oneOf:
+      - type: object
+        properties:
+          request:
+            $ref: "#/components/schemas/inline_response_200_2_request"
+          matches:
+            type: object
+            additionalProperties:
+              $ref: "#/components/schemas/TeamMatch"
+            description: Object keyed by the source provider ID
+            example:
+              "27":
+                name: Bayern Munich
+                league_id: L1
+                tm: 27
+                wy: "1657"
+                sb: "131"
+                sk: "148"
+          not_found:
+            type: array
+            example:
+            - 99999
+            items:
+              oneOf:
+              - type: integer
+              - type: string
+        description: Default response (mode not set)
+      - type: object
+        properties:
+          matches:
+            type: array
+            items:
+              $ref: "#/components/schemas/TeamMatch"
+        description: Simple response (mode=simple)
+    inline_response_200_request:
+      type: object
+      properties:
+        from:
+          type: string
+          example: tm
+        to:
+          type: array
+          example:
+          - wy
+          - sb
+          items:
+            type: string
+      description: Echo of the parsed request parameters
+    inline_response_200_1_request:
+      type: object
+      properties:
+        from:
+          type: string
+          example: sd
+        to:
+          type: array
+          example:
+          - wy
+          - sk
+          items:
+            type: string
+    inline_response_200_2_request:
+      type: object
+      properties:
+        from:
+          type: string
+          example: tm
+        to:
+          type: array
+          example:
+          - wy
+          - sb
+          - sk
+          items:
+            type: string
+  responses:
+    Unauthorized:
+      description: Missing or invalid authentication token
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Unauthorized
+    UnprocessableEntity:
+      description: |
+        One or more request parameters are invalid. Possible messages:
+        - `Invalid from provider value (from).`
+        - `No target providers provided (to).`
+        - `Invalid to provider value (to). Supported providers: ...`
+        - `Nothing to do. Providers are equal`
+        - `Nothing to do. No ids provided (ids)`
+        - `List is too big. Please provide 250 ids at most at once`
+        - `Nothing to do. No valid tm ids provided (ids)`
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: Invalid from provider value (from).
+  parameters:
+    token:
+      name: token
+      in: query
+      description: |
+        Authentication token. Must be provided on every request.
+        Example: `testtokenaccess`
+      required: true
+      schema:
+        type: string
+    from:
+      name: from
+      in: query
+      description: |
+        Source provider whose IDs you are translating **from**.
+        Accepts both short codes and full names (case-insensitive).
+      required: true
+      schema:
+        type: string
+    to:
+      name: to
+      in: query
+      description: |
+        Comma-separated list of target providers to translate IDs **to**.
+        Example: `wy,sb` or `wyscout,statsbomb`.
+      required: true
+      schema:
+        type: string
+    ids:
+      name: ids
+      in: query
+      description: |
+        Comma-separated list of IDs in the source provider format.
+        Maximum 250 IDs per request.
+        Example: `12345,67890,11111`
+      required: true
+      schema:
+        type: string
+    mode:
+      name: mode
+      in: query
+      description: |
+        Response format mode. Omit for the default structured response.
+        Pass `simple` to receive a flat array of matched records.
+      required: false
+      schema:
+        type: string
+        enum:
+        - simple
