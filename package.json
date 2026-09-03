@@ -1,8 +1,0 @@
-{
-  "name": "tm-api-doc",
-  "private": true,
-  "type": "module",
-  "dependencies": {
-    "@vercel/functions": "^1.0.0"
-  }
-}
